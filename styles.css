@@ -1,0 +1,492 @@
+/* Reset e Estilos Globais */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: #0d0407;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* Container do Celular (Mockup de Smartphone Moderno) */
+.phone-container {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  height: 820px;
+  background: #2d2a2a;
+  border-radius: 46px;
+  border: 10px solid #282525;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.8),
+    inset 0 0 10px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tela do Celular */
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #EA2E2E 0%, #A61616 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 36px;
+}
+
+/* Ilha Dinâmica simulando iPhone */
+.dynamic-island {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 105px;
+  height: 28px;
+  background-color: #000;
+  border-radius: 20px;
+  z-index: 100;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.1);
+}
+
+/* Corações Flutuantes */
+.hearts-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.heart {
+  position: absolute;
+  bottom: -40px;
+  font-size: 28px;
+  line-height: 1;
+  user-select: none;
+  animation: floatUpwards var(--animation-duration) linear infinite;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45)) saturate(0.5);
+  opacity: 0;
+}
+
+/* Pílula de Aviso ("Pensa bem...", "Por favor!!") */
+.warning-pill-container {
+  position: absolute;
+  top: 62px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.warning-pill {
+  background: rgba(220, 28, 28, 0.95);
+  color: #fff;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.35),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  animation: 
+    slideInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+    shakingPill 2s ease-in-out infinite alternate;
+}
+
+/* Wrapper das Telas */
+.screen-wrapper {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Cada Tela individual */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 75px 24px 34px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95) translateY(15px);
+  transition: 
+    opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+    transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 10;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+  z-index: 20;
+}
+
+/* Emojis */
+.emoji-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  max-height: 55%;
+}
+
+.emoji-svg {
+  width: 140px;
+  height: 140px;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.25));
+}
+
+/* Cartões (Glassmorphism) */
+.card {
+  width: 100%;
+  background: rgba(45, 12, 12, 0.65);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 30px 24px;
+  box-shadow: 
+    0 20px 45px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.card h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #ffcccc;
+  opacity: 0.9;
+}
+
+/* Botões */
+.btn-group {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  letter-spacing: 1px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn-yes {
+  flex: 1;
+  background: linear-gradient(135deg, #FF4545 0%, #C91616 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+}
+
+.btn-yes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(234, 46, 46, 0.4);
+}
+
+.btn-no {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 5;
+}
+
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #FF4545 0%, #C91616 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(234, 46, 46, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-whatsapp {
+  width: 100%;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-whatsapp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(37, 211, 102, 0.4);
+}
+
+/* Tela de Comida (Grade) */
+.food-card {
+  padding-bottom: 24px;
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px;
+  margin-top: 5px;
+}
+
+.food-item {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.food-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.food-item.selected {
+  background: rgba(255, 69, 69, 0.18);
+  border-color: #FF4545;
+  transform: scale(1.03) translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 69, 69, 0.2);
+}
+
+.food-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.food-item.selected .food-icon {
+  transform: scale(1.18) rotate(3deg);
+}
+
+.food-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Customização Scrollbar Food Grid */
+.food-grid::-webkit-scrollbar {
+  width: 6px;
+}
+.food-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+}
+.food-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+/* Tela de Data e Hora */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 6px;
+  width: 100%;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-group input {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.input-group input:focus {
+  border-color: #FF4545;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 69, 69, 0.15);
+}
+
+/* Tela de Resumo */
+.summary-text {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 5px;
+}
+
+.summary-text strong {
+  color: #FF4545;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(255, 69, 69, 0.3);
+}
+
+/* Animações CSS */
+
+/* Corações flutuando de baixo para cima */
+@keyframes floatUpwards {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg) scale(0.5);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--base-opacity);
+  }
+  90% {
+    opacity: var(--base-opacity);
+  }
+  100% {
+    transform: translateY(-900px) translateX(var(--random-x)) rotate(var(--random-rotate)) scale(var(--random-scale));
+    opacity: 0;
+  }
+}
+
+/* Flutuação de Emojis */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Pulsar do Emoji Final */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.animate-pulse {
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+/* Entrada dos alertas */
+@keyframes slideInDown {
+  0% {
+    transform: translateY(-55px) scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Tremor para balão de alerta */
+@keyframes shakingPill {
+  0% { transform: rotate(-1.5deg); }
+  100% { transform: rotate(1.5deg); }
+}
+
+/* Responsividade Básica (Adaptar em telas menores que o mockup) */
+@media (max-height: 850px) {
+  body {
+    padding: 10px;
+  }
+  .phone-container {
+    height: 92vh;
+    border-radius: 36px;
+    border-width: 8px;
+  }
+  .phone-screen {
+    border-radius: 28px;
+  }
+  .screen {
+    padding-top: 60px;
+    padding-bottom: 24px;
+  }
+  .emoji-svg {
+    width: 110px;
+    height: 110px;
+  }
+  .card {
+    padding: 22px 18px;
+    gap: 16px;
+  }
+}
