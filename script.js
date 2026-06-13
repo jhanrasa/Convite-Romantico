@@ -13,15 +13,36 @@ const phoneScreen = document.querySelector('.phone-screen');
 const warningContainer = document.getElementById('warning-container');
 const heartsContainer = document.getElementById('hearts-container');
 
-const foodItems = document.querySelectorAll('.food-item');
+// Elementos de Data e Hora
+const defaultDateSelectors = document.getElementById('default-date-selectors');
+const slotsSelectContainer = document.getElementById('slots-select-container');
+const slotsGrid = document.getElementById('slots-grid');
 const dateInput = document.getElementById('date-input');
 const timeInput = document.getElementById('time-input');
 const summaryDetails = document.getElementById('summary-details');
 const inviterNameSpan = document.getElementById('inviter-name');
 
-// Configuração do estado
+// Elementos do Modal Administrativo
+const emojiTrigger = document.getElementById('emoji-trigger');
+const adminModal = document.getElementById('admin-modal');
+const btnCloseAdmin = document.getElementById('btn-close-admin');
+const adminName = document.getElementById('admin-name');
+const adminPhone = document.getElementById('admin-phone');
+const adminSlotDate = document.getElementById('admin-slot-date');
+const adminSlotTime = document.getElementById('admin-slot-time');
+const btnAddSlot = document.getElementById('btn-add-slot');
+const adminSlotsList = document.getElementById('admin-slots-list');
+const btnGenerateLink = document.getElementById('btn-generate-link');
+
+// Configuração de Estado Global da Aplicação
 let selectedFoods = [];
 let yesScale = 1;
+let adminSlots = []; // Slots adicionados localmente no painel administrativo
+let urlSlots = [];   // Slots lidos da URL
+let selectedSlot = null; // Slot selecionado pela convidada (se houver slots na URL)
+
+let chosenDate = "";
+let chosenTime = "";
 
 // 1. Configurar nome do Remetente no botão final
 inviterNameSpan.innerText = CONFIG.name.toUpperCase();
@@ -123,20 +144,86 @@ foodItems.forEach(item => {
   });
 });
 
-// 5. Configurar Data e Hora
+// 5. Configurar Data e Hora de forma Condicional (Inputs Padrão ou Slots da URL)
+const urlParams = new URLSearchParams(window.location.search);
+
+function initializeInviteSlots() {
+  const slotsParam = urlParams.get('slots');
+  
+  if (slotsParam) {
+    // Ex: slots=2026-06-15T19:00,2026-06-16T20:00
+    urlSlots = slotsParam.split(',').map(s => {
+      const [d, t] = s.split('T');
+      return { date: d, time: t };
+    }).filter(s => s.date && s.time);
+    
+    if (urlSlots.length > 0) {
+      // Ocultar calendário padrão e exibir o grid de slots do Jean
+      defaultDateSelectors.style.display = 'none';
+      slotsSelectContainer.style.display = 'block';
+      slotsGrid.innerHTML = '';
+      
+      // Desabilitar o botão de avançar até que ela escolha um horário
+      btnNext4.disabled = true;
+      
+      urlSlots.forEach((slot) => {
+        const btn = document.createElement('button');
+        btn.className = 'slot-btn';
+        
+        // Formatar data: AAAA-MM-DD -> DiaDaSemana, DD/MM
+        const parts = slot.date.split('-');
+        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+        const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+        const dayName = daysOfWeek[dateObj.getDay()];
+        const formattedDate = `${parts[2]}/${parts[1]}`;
+        
+        btn.innerHTML = `
+          <div>
+            <strong>${dayName}, ${formattedDate}</strong>
+            <div style="font-size: 0.8rem; opacity: 0.8; font-weight: normal; margin-top: 2px;">às ${slot.time}</div>
+          </div>
+          <span class="slot-btn-check">✓</span>
+        `;
+        
+        btn.addEventListener('click', () => {
+          // Desmarcar botões selecionados anteriormente
+          document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          
+          selectedSlot = slot;
+          btnNext4.disabled = false;
+        });
+        
+        slotsGrid.appendChild(btn);
+      });
+    }
+  }
+}
+
+// Configurar limites do calendário padrão caso não tenha slots
 const today = new Date();
 const todayStr = today.toISOString().split('T')[0];
 dateInput.min = todayStr;
 
-// Definir data padrão para amanhã
 const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
 dateInput.value = tomorrow.toISOString().split('T')[0];
 
 btnNext4.addEventListener('click', () => {
-  if (!dateInput.value || !timeInput.value) {
-    alert("Por favor, escolhe uma data e um horário bem legal! 😉");
-    return;
+  if (urlSlots.length > 0) {
+    if (!selectedSlot) {
+      alert("Por favor, selecione um dos horários disponíveis! 😉");
+      return;
+    }
+    chosenDate = selectedSlot.date;
+    chosenTime = selectedSlot.time;
+  } else {
+    if (!dateInput.value || !timeInput.value) {
+      alert("Por favor, escolhe uma data e um horário bem legal! 😉");
+      return;
+    }
+    chosenDate = dateInput.value;
+    chosenTime = timeInput.value;
   }
   
   // Gerar resumo final
@@ -146,8 +233,7 @@ btnNext4.addEventListener('click', () => {
 
 // Formatação do resumo na tela final
 function formatAndShowSummary() {
-  const rawDate = dateInput.value;
-  const parts = rawDate.split('-');
+  const parts = chosenDate.split('-');
   const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
   
   let foodsText = "";
@@ -161,13 +247,12 @@ function formatAndShowSummary() {
     foodsText = `${otherFoods} e ${lastFood}`;
   }
   
-  summaryDetails.innerHTML = `Vamos comer <strong>${foodsText}</strong> no dia <strong>${formattedDate}</strong> às <strong>${timeInput.value}</strong>!`;
+  summaryDetails.innerHTML = `Vamos comer <strong>${foodsText}</strong> no dia <strong>${formattedDate}</strong> às <strong>${chosenTime}</strong>!`;
 }
 
-// 6. Integração e Envio via WhatsApp
+// 6. Envio via WhatsApp
 btnWhatsapp.addEventListener('click', () => {
-  const rawDate = dateInput.value;
-  const parts = rawDate.split('-');
+  const parts = chosenDate.split('-');
   const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
   
   let foodsText = "";
@@ -181,48 +266,134 @@ btnWhatsapp.addEventListener('click', () => {
     foodsText = `${otherFoods} e ${lastFood}`;
   }
   
-  // Mensagem customizada e romântica
-  const messageText = `Oi, ${CONFIG.name}! Aceito o convite para o nosso date! Vamos comer ${foodsText} no dia ${formattedDate} às ${timeInput.value}! 🥰`;
+  // Mensagem romântica
+  const messageText = `Oi, ${CONFIG.name}! Aceito o convite para o nosso date! Vamos comer ${foodsText} no dia ${formattedDate} às ${chosenTime}! 🥰`;
   
   const whatsappUrl = `https://api.whatsapp.com/send?phone=${CONFIG.phone}&text=${encodeURIComponent(messageText)}`;
   window.open(whatsappUrl, '_blank');
 });
 
-// 7. Motor de Corações Flutuantes (Background)
-const heartSymbols = ['🖤', '🖤', '🖤', '❤️', '🖤']; // Corações escuros elegantes (e alguns vermelhos de detalhe)
+// 7. Lógica do Painel Administrativo Oculto (Duplo Clique no Emoji)
+let lastTouchTime = 0;
 
-function createHeart() {
-  const heart = document.createElement('span');
-  heart.className = 'heart';
+function openAdminPanel() {
+  adminName.value = CONFIG.name;
+  adminPhone.value = CONFIG.phone;
   
-  // Escolher símbolo aleatoriamente
-  const symbol = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-  heart.innerText = symbol;
+  // Configurar campos de data/hora do cadastro com data de amanhã por padrão
+  const defaultSlotDate = new Date();
+  defaultSlotDate.setDate(defaultSlotDate.getDate() + 1);
+  adminSlotDate.value = defaultSlotDate.toISOString().split('T')[0];
+  adminSlotDate.min = todayStr;
   
-  // Posição horizontal de início aleatória
-  const startX = Math.random() * 100;
-  heart.style.left = `${startX}%`;
+  // Renderizar slots atuais caso já existam em memória local
+  renderAdminSlots();
   
-  // Parâmetros aleatórios passados para animação CSS
-  const randomX = (Math.random() * 160 - 80); // Desvio horizontal
-  const randomRotate = (Math.random() * 360); // Rotação final
-  const randomScale = (Math.random() * 0.7 + 0.4); // Tamanho
-  const animDuration = (Math.random() * 5 + 4); // Tempo de flutuação (4s a 9s)
-  const opacity = (Math.random() * 0.4 + 0.35); // Opacidade base
-  
-  heart.style.setProperty('--random-x', `${randomX}px`);
-  heart.style.setProperty('--random-rotate', `${randomRotate}deg`);
-  heart.style.setProperty('--random-scale', randomScale);
-  heart.style.setProperty('--animation-duration', `${animDuration}s`);
-  heart.style.setProperty('--base-opacity', opacity);
-  
-  heartsContainer.appendChild(heart);
-  
-  // Limpeza do DOM após o término da animação
-  setTimeout(() => {
-    heart.remove();
-  }, animDuration * 1000);
+  adminModal.style.display = 'flex';
 }
 
-// Iniciar e manter corações flutuando
-setInterval(createHeart, 300);
+emojiTrigger.addEventListener('dblclick', openAdminPanel);
+
+emojiTrigger.addEventListener('touchstart', (e) => {
+  const now = new Date().getTime();
+  const timespan = now - lastTouchTime;
+  if (timespan < 300 && timespan > 0) {
+    e.preventDefault();
+    openAdminPanel();
+  }
+  lastTouchTime = now;
+});
+
+// Fechar Painel Admin
+btnCloseAdmin.addEventListener('click', () => {
+  adminModal.style.display = 'none';
+});
+
+// Adicionar Horário Livre no Painel
+btnAddSlot.addEventListener('click', () => {
+  const dVal = adminSlotDate.value;
+  const tVal = adminSlotTime.value;
+  
+  if (!dVal || !tVal) {
+    alert("Preencha a data e o horário para adicionar!");
+    return;
+  }
+  
+  // Evitar duplicados
+  const isDuplicate = adminSlots.some(s => s.date === dVal && s.time === tVal);
+  if (isDuplicate) {
+    alert("Esse horário já foi adicionado!");
+    return;
+  }
+  
+  adminSlots.push({ date: dVal, time: tVal });
+  
+  // Limpar campos ou resetar horário
+  adminSlotTime.value = "19:00";
+  
+  renderAdminSlots();
+});
+
+// Renderizar slots na lista do admin
+function renderAdminSlots() {
+  adminSlotsList.innerHTML = '';
+  
+  adminSlots.forEach((slot, index) => {
+    const li = document.createElement('li');
+    
+    // Formatar data: AAAA-MM-DD -> DD/MM
+    const parts = slot.date.split('-');
+    const formattedDate = `${parts[2]}/${parts[1]}`;
+    
+    li.innerHTML = `
+      <span>📅 ${formattedDate} às ${slot.time}</span>
+      <button data-index="${index}">&times;</button>
+    `;
+    
+    // Ouvinte para remover o slot
+    li.querySelector('button').addEventListener('click', (e) => {
+      const idx = parseInt(e.target.dataset.index);
+      adminSlots.splice(idx, 1);
+      renderAdminSlots();
+    });
+    
+    adminSlotsList.appendChild(li);
+  });
+}
+
+// Gerar e Copiar Link Customizado
+btnGenerateLink.addEventListener('click', () => {
+  const nameVal = adminName.value.trim() || 'Jean';
+  const phoneVal = adminPhone.value.trim().replace(/\D/g, '') || '5516996332657';
+  
+  const params = new URLSearchParams();
+  params.set('name', nameVal);
+  params.set('phone', phoneVal);
+  
+  if (adminSlots.length > 0) {
+    const slotsStr = adminSlots.map(s => `${s.date}T${s.time}`).join(',');
+    params.set('slots', slotsStr);
+  }
+  
+  // Criar URL completa
+  const generatedUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+  
+  // Copiar para o Clipboard
+  navigator.clipboard.writeText(generatedUrl).then(() => {
+    alert("Sucesso! Link do convite gerado e copiado! 🎉\n\nAgora envie para ela no WhatsApp!");
+    adminModal.style.display = 'none';
+  }).catch(err => {
+    console.error("Falha ao copiar link automaticamente: ", err);
+    alert(`Link gerado com sucesso! Como não conseguimos copiar automaticamente, copie manualmente abaixo:\n\n${generatedUrl}`);
+  });
+});
+
+// 8. Inicializar os Slots ao carregar
+initializeInviteSlots();
+
+// 9. Motor de Corações Flutuantes (Background)
+function startHeartEngine() {
+  setInterval(createHeart, 300);
+}
+
+startHeartEngine();
