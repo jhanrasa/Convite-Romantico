@@ -490,3 +490,281 @@ body {
     gap: 16px;
   }
 }
+
+/* Modal Administrativo */
+.admin-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(13, 4, 7, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.admin-card {
+  width: 100%;
+  max-height: 92%;
+  background: rgba(35, 12, 12, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+}
+
+.admin-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.btn-close-admin {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-close-admin:hover {
+  color: #fff;
+}
+
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.input-group-admin {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 6px;
+}
+
+.input-group-admin label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-group-admin input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-group-admin input:focus {
+  border-color: #ff4545;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.admin-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 0;
+}
+
+.admin-card h4 {
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: left;
+}
+
+.admin-slot-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-slot-add input[type="date"],
+.admin-slot-add input[type="time"] {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 10px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.admin-slot-add input[type="date"]:focus,
+.admin-slot-add input[type="time"]:focus {
+  border-color: #ff4545;
+}
+
+.btn-add-slot {
+  width: 38px;
+  height: 38px;
+  background: #ff4545;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  box-shadow: 0 4px 10px rgba(255, 69, 69, 0.3);
+}
+
+.btn-add-slot:hover {
+  background: #e03b3b;
+}
+
+.admin-slots-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.admin-slots-list-container label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+}
+
+.admin-slots-list {
+  list-style: none;
+  max-height: 110px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.admin-slots-list li {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.admin-slots-list li button {
+  background: none;
+  border: none;
+  color: #ff4545;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 800;
+  transition: color 0.2s;
+}
+
+.admin-slots-list li button:hover {
+  color: #ff6b6b;
+}
+
+/* Slots Selection na Tela 4 */
+.slots-select-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.slots-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 230px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.slot-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px 18px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  user-select: none;
+}
+
+.slot-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.slot-btn.selected {
+  background: rgba(255, 69, 69, 0.18);
+  border-color: #FF4545;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 69, 69, 0.25);
+}
+
+.slot-btn-check {
+  font-size: 1.1rem;
+  color: transparent;
+  transition: color 0.2s;
+}
+
+.slot-btn.selected .slot-btn-check {
+  color: #FF4545;
+}
+
+/* Customização Scrollbars */
+.admin-slots-list::-webkit-scrollbar,
+.slots-grid::-webkit-scrollbar {
+  width: 5px;
+}
+.admin-slots-list::-webkit-scrollbar-track,
+.slots-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 10px;
+}
+.admin-slots-list::-webkit-scrollbar-thumb,
+.slots-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
