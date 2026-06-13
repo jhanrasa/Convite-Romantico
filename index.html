@@ -28,7 +28,7 @@
         
         <!-- TELA 1: O PEDIDO -->
         <section class="screen active" id="screen-1">
-          <div class="emoji-container animate-float">
+          <div class="emoji-container animate-float" id="emoji-trigger" style="cursor: pointer;" title="Double click para abrir configurações">
             <!-- Emoji Súplica (🥺) -->
             <svg class="emoji-svg" viewBox="0 0 100 100">
               <defs>
@@ -154,17 +154,28 @@
           <div class="card date-card">
             <h2>📅 QUANDO VOCÊ TÁ LIVRE?</h2>
             
-            <div class="input-group">
-              <label for="date-input">Escolhe a data</label>
-              <input type="date" id="date-input" required>
+            <!-- Inputs padrões (visíveis se não houver slots na URL) -->
+            <div id="default-date-selectors" style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
+              <div class="input-group">
+                <label for="date-input">Escolhe a data</label>
+                <input type="date" id="date-input" required>
+              </div>
+              
+              <div class="input-group">
+                <label for="time-input">Escolhe o horário</label>
+                <input type="time" id="time-input" value="19:00" required>
+              </div>
+            </div>
+
+            <!-- Seleção de slots pré-definidos (visível se houver slots na URL) -->
+            <div id="slots-select-container" class="slots-select-container" style="display: none; width: 100%;">
+              <p class="subtitle" style="margin-bottom: 10px; font-size: 0.9rem;">Escolha um dos horários disponíveis:</p>
+              <div class="slots-grid" id="slots-grid">
+                <!-- Inserido dinamicamente via JS -->
+              </div>
             </div>
             
-            <div class="input-group">
-              <label for="time-input">Escolhe o horário</label>
-              <input type="time" id="time-input" value="19:00" required>
-            </div>
-            
-            <button class="btn btn-primary" id="btn-next-4">SELECIONAR A DATA ➔</button>
+            <button class="btn btn-primary" id="btn-next-4" style="margin-top: 5px;">SELECIONAR A DATA ➔</button>
           </div>
         </section>
         
@@ -199,6 +210,49 @@
         </section>
         
       </div>
+
+      <!-- MODAL ADMINISTRATIVO OCULTO -->
+      <div class="admin-modal" id="admin-modal" style="display: none;">
+        <div class="admin-card">
+          <div class="admin-header">
+            <h3>Configurações 🛠️</h3>
+            <button class="btn-close-admin" id="btn-close-admin">&times;</button>
+          </div>
+          
+          <div class="admin-content">
+            <div class="input-group-admin">
+              <label for="admin-name">Seu Nome</label>
+              <input type="text" id="admin-name" placeholder="Ex: Jean">
+            </div>
+            
+            <div class="input-group-admin" style="margin-top: 12px;">
+              <label for="admin-phone">Seu WhatsApp (apenas números)</label>
+              <input type="text" id="admin-phone" placeholder="Ex: 5516996332657">
+            </div>
+            
+            <div class="admin-divider"></div>
+            
+            <h4>Cadastrar Horários Livres</h4>
+            <div class="admin-slot-add">
+              <input type="date" id="admin-slot-date">
+              <input type="time" id="admin-slot-time" value="19:00">
+              <button class="btn-add-slot" id="btn-add-slot">+</button>
+            </div>
+            
+            <div class="admin-slots-list-container">
+              <label>Horários Adicionados:</label>
+              <ul class="admin-slots-list" id="admin-slots-list">
+                <!-- Inserido dinamicamente via JS -->
+              </ul>
+            </div>
+            
+            <button class="btn btn-primary btn-generate-link" id="btn-generate-link" style="margin-top: 10px;">
+              Gerar & Copiar Link 🔗
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
